@@ -1,9 +1,9 @@
-name: Test, build and deploy to administrans.fr
+name: Test, build and deploy
 
 on:
   push:
     branches:
-      - main
+      - migrate_to_TDF
       # - $default-branch  # Set a branch name to trigger deployment
   pull_request:
 
@@ -27,29 +27,16 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-
       - name: Build
         run: yarn build
-        env:
-          VITE_PLAUSIBLE_TRACKING_DOMAIN: administrans.fr
-          VITE_PLAUSIBLE_URL: https://stats.administrans.fr
-          VITE_REDIRECT_DOMAIN: administrans.fr
 
       - name: Disable jekyll
         run: touch dist/.nojekyll
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/migrate_to_TDF'
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages # The branch the action should deploy to.
-          folder: dist # The folder the action should deploy.
-          
-      - name: Deploy review branch
-        uses: JamesIves/github-pages-deploy-action@v4
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          branch: pr-review-${{ github.event.number }} # The branch the action should deploy to.
           folder: dist # The folder the action should deploy.
